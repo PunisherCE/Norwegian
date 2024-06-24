@@ -32,27 +32,27 @@ export default function TabLayout() {
         options={{
           title: 'Study',
           tabBarIcon: ({ color }) => <AntDesign name="play" size={24} color="black" />,
-        }}
+          }}
       />
-        <Tabs.Screen
-          name="add"
-          options={{
-            title: 'add',
-            tabBarIcon: ({ color }) => <AntDesign name="pluscircle" size={24} color="black" />,
-          }}
-        />
-        <Tabs.Screen
-          name="custom"
-          options={{
-            title: 'custom',
-            tabBarIcon: ({ color }) => <AntDesign name="questioncircle" size={24} color="black" />,
-          }}
-        />
       <Tabs.Screen
         name="review"
         options={{
           title: 'review',
           tabBarIcon: ({ color }) => <AntDesign name="book" size={24} color="black" />,
+        }}
+      />
+      <Tabs.Screen
+        name="add"
+        options={{
+          title: 'add',
+          tabBarIcon: ({ color }) => <AntDesign name="pluscircle" size={24} color="black" />,
+        }}
+      />
+      <Tabs.Screen
+        name="custom"
+        options={{
+          title: 'custom',
+          tabBarIcon: ({ color }) => <AntDesign name="questioncircle" size={24} color="black" />,
         }}
       />
     </Tabs>
