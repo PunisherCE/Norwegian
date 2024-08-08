@@ -5,13 +5,14 @@ import { useState } from 'react';
 import { useFocusEffect } from 'expo-router';
 import { Checkbox } from 'react-native-paper';
 
-type subjectType = 'begining' | 'sustantives' | 'pronouns' | 'verbs' | 'questions' | 'conjunctions' | 'prepositions' | 'adverbs' | 'adjetives' | 'other' | 'compilation' | 'many' | 'various' | 'custom' | 'verbs2';
+type subjectType = 'begining' | 'sustantives' | 'pronouns' | 'verbs' | 'questions' | 'conjunctions' | 'prepositions' | 'adverbs' | 'adjetives' | 'other' | 'compilation' | 'many' | 'various' | 'custom' | 'allVerbs' | 'verbs1' | 'verbs2' | 'verbs3';
 
 const arrayTopics: any[] = [
-  { topic: 'custom', id: 0}, { topic: 'compilation', id: 1 } , { topic: 'verbs2', id: 2}, { topic: 'sustantives', id: 3 }, { topic: 'pronouns', id: 4 }, { topic: 'verbs', id: 5 }, { topic: 'questions', id: 6 }, { topic: 'conjunctions', id: 7 }, { topic: 'prepositions', id: 8 }, { topic: 'adverbs', id: 9 }, { topic: 'adjetives', id: 10 }, { topic: 'other', id: 11 }, { topic: 'many', id: 12 }, { topic: 'various', id: 13 }
+  { topic: 'custom', id: 0}, { topic: 'compilation', id: 1 } , { topic: 'allVerbs', id: 2}, { topic: 'sustantives', id: 3 }, { topic: 'pronouns', id: 4 }, { topic: 'verbs', id: 5 }, { topic: 'questions', id: 6 }, { topic: 'conjunctions', id: 7 }, { topic: 'prepositions', id: 8 }, { topic: 'adverbs', id: 9 }, { topic: 'adjetives', id: 10 }, { topic: 'other', id: 11 }, { topic: 'many', id: 12 }, { topic: 'various', id: 13 }, {topic: 'verbs1', id: 14}, {topic: 'verbs2', id: 15}, {topic: 'verbs3', id: 16}
 ];
 
-let wordSet = new Set<number>()
+let wordSet1 = new Set<number>()
+let wordSet2 = new Set<number>()
 
 let reviewList: string
 
@@ -50,10 +51,13 @@ function TopicButtons() {
   const [words, setWord] = useState<wordsTo>({ word: 'Select a Category', index: -1 })
   const [translate, setTranslate] = useState<string>('Waiting...')
   const [disabler, setDisabler] = useState<boolean>(false)
-  const [show, setShow] = useState<boolean>(true)
+  const [selectedList, setSelectedList] = useState<boolean>(true)
   const [reviewState, setReviewState] = useState<string>('')
   const [lista2, setLista2] = useState<string[]>([])
-
+  const [listTopic1, setListTopic1] = useState<subjectType>('begining')
+  const [listTopic2, setListTopic2] = useState<subjectType>('begining')
+  const [reRender, setReRender] = useState<boolean>(true)
+  
   async function addReview(item: string) {
     reviewList = reviewList? reviewList.concat(',', item): item
     await AsyncStorage.setItem('review', reviewList)
@@ -84,9 +88,6 @@ function TopicButtons() {
               if (topic !== item.topic) {
                 setTopic(item.topic)
                 setWord(getWords(item.topic))
-                wordSet.clear()
-                setLista2([])
-                setShow(true)
                 setTranslate('Waiting...')
                 setDisabler(false)
               }
@@ -134,16 +135,63 @@ function TopicButtons() {
             onPress={() => {
               if (topic !== 'begining') {
                 setDisabler(false)
-                setShow(false)
-                if (words.index % 2 === 0) {
-                  if (!wordSet.has(words.index + 1)) {
-                    wordSet.add(words.index)
+                if(selectedList){
+                  if(topic === listTopic1){
+                    if (words.index % 2 === 0) {
+                      if (!wordSet1.has(words.index + 1)) {
+                        wordSet1.add(words.index)
+                      }
+                    } else if (!wordSet1.has(words.index - 1)) {
+                      wordSet1.add(words.index)
+                    }
+                    setWord(getWords(topic))
+                    setTranslate('Waiting...')
+                    const reviewList = Array.from(wordSet1)
+                    setLista2(createList(topic, reviewList))
+                  } else {
+                    wordSet1.clear()
+                    setListTopic1(topic)
+                    if (words.index % 2 === 0) {
+                      if (!wordSet1.has(words.index + 1)) {
+                        wordSet1.add(words.index)
+                      }
+                    } else if (!wordSet1.has(words.index - 1)) {
+                      wordSet1.add(words.index)
+                    }
+                    setWord(getWords(topic))
+                    setTranslate('Waiting...')
+                    const reviewList = Array.from(wordSet1)
+                    setLista2(createList(topic, reviewList))
                   }
-                } else if (!wordSet.has(words.index - 1)) {
-                  wordSet.add(words.index)
+                } else {
+                  if(topic === listTopic2){
+                    if (words.index % 2 === 0) {
+                      if (!wordSet2.has(words.index + 1)) {
+                        wordSet2.add(words.index)
+                      }
+                    } else if (!wordSet2.has(words.index - 1)) {
+                      wordSet2.add(words.index)
+                    }
+                    setWord(getWords(topic))
+                    setTranslate('Waiting...')
+                    const reviewList = Array.from(wordSet2)
+                    setLista2(createList(topic, reviewList))
+                  } else {
+                    wordSet2.clear()
+                    setListTopic2(topic)
+                    if (words.index % 2 === 0) {
+                      if (!wordSet2.has(words.index + 1)) {
+                        wordSet2.add(words.index)
+                      }
+                    } else if (!wordSet2.has(words.index - 1)) {
+                      wordSet2.add(words.index)
+                    }
+                    setWord(getWords(topic))
+                    setTranslate('Waiting...')
+                    const reviewList = Array.from(wordSet2)
+                    setLista2(createList(topic, reviewList))
+                  }
                 }
-                setWord(getWords(topic))
-                setTranslate('Waiting...')
               }
             }}>
             <Text style={{color: 'white'}}>Wrong?</Text>
@@ -164,16 +212,65 @@ function TopicButtons() {
           </Pressable>
         </View>
       </View>
-      <View style={{backgroundColor: '#000', marginBottom: 12}}>
-        <Pressable style={[styles.button, show? {backgroundColor: 'green'} : {backgroundColor: 'blue'}]}
-          android_ripple={{color: 'gray', borderless: true}} 
-          disabled={show}
-          onPress={() => {
-            setShow(true)
-            const reviewList = Array.from(wordSet)
-            setLista2(createList(topic, reviewList))
-          }}><Text style={{ justifyContent: 'center', alignContent: 'center', fontSize: 16, color: 'white' }}>Review</Text>
-        </Pressable>
+      <View style={{backgroundColor: '#000', marginBottom: 12, flexDirection: 'row'}}>
+        <View style={{flexDirection: 'row', backgroundColor: 'black', marginHorizontal: 5}}>
+          <Pressable
+            style={[styles.buttonList, selectedList? {backgroundColor: 'green'} : {backgroundColor: 'blue'}]}
+            android_ripple={{color: 'gray', borderless: true}}
+            disabled={selectedList}
+            onPress={() => {
+              if(listTopic1 !== 'begining'){
+                setTopic(listTopic1)
+                setWord(getWords(listTopic1))
+                setTranslate('Waiting...')
+                setDisabler(false)                
+              }              
+              setSelectedList(true)   
+              setLista2(createList(listTopic1, Array.from(wordSet1)))                         
+            }} >
+            <Text style={{color: 'white'}}>List 1</Text>
+          </Pressable>
+          <Pressable
+            style={[styles.buttonClear, wordSet1.size === 0? {backgroundColor: 'green'} : {backgroundColor: 'blue'}]}
+            disabled={wordSet1.size === 0}
+            onPress={()=>{
+              wordSet1.clear()
+              setReRender(!reRender)
+              if(selectedList) setLista2([])
+              setListTopic1('begining')
+            }}>
+            <Text style={{color: 'white'}}>Clear</Text>
+          </Pressable>
+        </View>
+        <View style={{flexDirection: 'row', backgroundColor: 'black', marginHorizontal: 5}}>
+          <Pressable
+            style={[styles.buttonList, !selectedList? {backgroundColor: 'green'} : {backgroundColor: 'blue'}]}
+            android_ripple={{color: 'gray', borderless: true}}
+            disabled={!selectedList}
+            onPress={() => {
+              if(listTopic2 !== 'begining'){
+                setTopic(listTopic2)
+                setWord(getWords(listTopic2))
+                setTranslate('Waiting...')
+                setDisabler(false)                
+              }              
+              setSelectedList(false)       
+              setLista2(createList(listTopic2, Array.from(wordSet2)))
+            }}>
+            <Text style={{color: 'white'}}>List 2</Text>
+          </Pressable>
+          <Pressable
+            style={[styles.buttonClear, wordSet2.size === 0? {backgroundColor: 'green'} : {backgroundColor: 'blue'}]}
+            disabled={wordSet2.size === 0}
+            onPress={()=>{
+              wordSet2.clear()
+              setReRender(!reRender)
+              if(!selectedList) setLista2([])
+              setListTopic2('begining')
+            }}>
+            <Text style={{color: 'white'}}>Clear</Text>
+          </Pressable>
+        </View>
       </View >
       <FlatList
         data={lista2}
@@ -273,6 +370,26 @@ const styles = StyleSheet.create({
     fontSize: 30,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  buttonList: {
+    borderRightWidth: 2,
+    borderRightColor: 'black',
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    fontSize: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderTopLeftRadius: 10,
+    borderBottomLeftRadius: 10
+  },
+  buttonClear: {
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    fontSize: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderTopRightRadius: 10,
+    borderBottomRightRadius: 10
   },
   answears: {
     marginTop: 5,
@@ -400,6 +517,22 @@ function getWords(subject: subjectType): wordsTo {
 
       return { word: custom[currentIndex], index: currentIndex }
 
+    case 'allVerbs':
+      currentIndex = Math.floor(Math.random() * allVerbs.length)
+      if (testeIndex !== currentIndex) {
+        testeIndex = currentIndex
+      } else return getWords(subject)
+
+      return { word: allVerbs[currentIndex], index: currentIndex }
+      
+    case 'verbs1':
+      currentIndex = Math.floor(Math.random() * verbs1.length)
+      if (testeIndex !== currentIndex) {
+        testeIndex = currentIndex
+      } else return getWords(subject)
+
+      return { word: verbs1[currentIndex], index: currentIndex }
+
     case 'verbs2':
       currentIndex = Math.floor(Math.random() * verbs2.length)
       if (testeIndex !== currentIndex) {
@@ -407,6 +540,14 @@ function getWords(subject: subjectType): wordsTo {
       } else return getWords(subject)
 
       return { word: verbs2[currentIndex], index: currentIndex }
+
+    case 'verbs3':
+      currentIndex = Math.floor(Math.random() * verbs3.length)
+      if (testeIndex !== currentIndex) {
+        testeIndex = currentIndex
+      } else return getWords(subject)
+
+      return { word: verbs3[currentIndex], index: currentIndex }
 
     default:
       return { word: '', index: -1 }
@@ -468,10 +609,22 @@ function showTranslated(subject: subjectType, index: number): string {
       if (index % 2 === 0) {
         return custom[index + 1]
       } else return custom[index - 1]
+    case 'allVerbs':
+      if (index % 2 === 0) {
+        return allVerbs[index + 1]
+      } else return allVerbs[index - 1]
+    case 'verbs1':
+      if (index % 2 === 0) {
+        return verbs1[index + 1]
+      } else return verbs1[index - 1]
     case 'verbs2':
       if (index % 2 === 0) {
         return verbs2[index + 1]
       } else return verbs2[index - 1]
+    case 'verbs3':
+      if (index % 2 === 0) {
+        return verbs3[index + 1]
+      } else return verbs3[index - 1]
 
     default:
       return ''
@@ -550,10 +703,25 @@ function createList(topic: subjectType, lista: number[]): string[] {
           ? custom[index] + ': ' + custom[index + 1] + '\n'
           : custom[index - 1] + ': ' + custom[index] + '\n';
         break
+      case 'allVerbs':
+        currentItem = (index % 2 === 0)
+          ? allVerbs[index] + ': ' + allVerbs[index + 1] + '\n'
+          : allVerbs[index - 1] + ': ' + allVerbs[index] + '\n';
+        break
+      case 'verbs1':
+        currentItem = (index % 2 === 0)
+          ? verbs1[index] + ': ' + verbs1[index + 1] + '\n'
+          : verbs1[index - 1] + ': ' + verbs1[index] + '\n';
+        break
       case 'verbs2':
         currentItem = (index % 2 === 0)
           ? verbs2[index] + ': ' + verbs2[index + 1] + '\n'
           : verbs2[index - 1] + ': ' + verbs2[index] + '\n';
+        break
+      case 'verbs3':
+        currentItem = (index % 2 === 0)
+          ? verbs3[index] + ': ' + verbs3[index + 1] + '\n'
+          : verbs3[index - 1] + ': ' + verbs3[index] + '\n';
         break
 
       default:
@@ -3108,7 +3276,526 @@ const various: string[] = [
   'stoler', 'chairs'
 ]
 
-const verbs2: string[] = [
+const allVerbs: string[] = [
+  'å akseptere', 'to accept',
+  'å arbeide', 'to work',
+  'å avtale', 'to make an arrangement',
+  'å bade', 'to bathe',
+  'å be om', 'to ask for',
+  'å beklage', 'to apologize',
+  'å beskrive', 'to describe',
+  'å bestemme', 'to decide',
+  'å betale', 'to pay',
+  'å bevege', 'to move',
+  'å blande', 'to mix',
+  'å bli stille', 'to become windy',
+  'å bo i', 'to live',
+  'å bråke', 'to make noise',
+  'å bytte', 'to switch out',
+  'å bære', 'to carry',
+  'å dele', 'to share',
+  'å dra', 'to go',
+  'å drive med', 'to operate',
+  'å drikke', 'to drink',
+  'å dø', 'to die',
+  'å elske', 'to love seriously',
+  'å feile', 'to make a mistake',
+  'å feire', 'to celebrate',
+  'å flytte', 'to move',
+  'å flykte', 'to flee',
+  'å foreslå', 'to suggest',
+  'å foretrekke', 'to prefer',
+  'å forklare', 'to explain',
+  'å forlate', 'to depart',
+  'å forstå', 'to understand',
+  'å fortelle', 'to tell',
+  'å fortsette', 'to continue',
+  'å fryse', 'to freeze',
+  'å få', 'to get',
+  'å føle', 'to feel',
+  'å følge', 'to follow',
+  'å gi', 'to give',
+  'å gifte', 'to marry',
+  'å gjemme', 'to hide',
+  'å gjenta', 'to repeat',
+  'å gjespe', 'to yawn',
+  'å gjette', 'to guess',
+  'å gjøre', 'to do',
+  'å glede', 'to be excited',
+  'å glemme', 'to forget',
+  'å gli', 'to glide',
+  'å godkjenne', 'to approve',
+  'å greie', 'to manage',
+  'å gråte', 'to cry',
+  'å gå', 'to go',
+  'å ha', 'to have',
+  'å handle', 'to shop',
+  'å handle om', 'to be about',
+  'å henge', 'to hang',
+  'å hente', 'to retrieve',
+  'å hete', 'to be named',
+  'å hilse', 'to greet',
+  'å hjelpe', 'to help',
+  'å holde', 'to hold',
+  'å hoste', 'to cough',
+  'å huske', 'to remember',
+  'å hygge', 'to enjoy',
+  'å hyle', 'to howl',
+  'å høre', 'to hear',
+  'å høre på', 'to listen',
+  'å håpe', 'to hope',
+  'å kalle', 'to call',
+  'å kaste', 'to throw',
+  'å kjenne', 'to know',
+  'å kjøpe', 'to buy',
+  'å kjøre', 'to drive',
+  'å klage', 'to complain',
+  'å klappe', 'to clap',
+  'å klare', 'to manage',
+  'å klatre', 'to climb',
+  'å kle', 'to dress',
+  'å klø', 'to scratch',
+  'å knekke', 'to crack',
+  'å kose', 'to snuggle',
+  'å krangle', 'to argue',
+  'å krysse', 'to cross',
+  'å la', 'to let',
+  'å lage', 'to make',
+  'å laste', 'to load',
+  'å legge', 'to lay',
+  'å le', 'to laugh',
+  'å lede', 'to lead',
+  'å leie', 'to rent',
+  'å leke', 'to play',
+  'å lese', 'to read',
+  'å leve', 'to live',
+  'å ligge', 'to lie',
+  'å ligne', 'to resemble',
+  'å lime', 'to glue',
+  'å lukke', 'to close',
+  'å lukte', 'to smell',
+  'å lyve', 'to lie',
+  'å lytte', 'to listen',
+  'å løfte', 'to lift',
+  'å løpe', 'to run',
+  'å låne', 'to borrow',
+  'å låse', 'to lock',
+  'å lære', 'to learn',
+  'å male', 'to paint',
+  'å mene', 'to mean',
+  'å møte', 'to meet',
+  'å nyse', 'to sneeze',
+  'å nyte', 'to enjoy',
+  'å nærme', 'to approach',
+  'å ordne', 'to organize',
+  'å overraske', 'to surprise',
+  'å passe på', 'to take care of',
+  'å passe til', 'to fit',
+  'å peke', 'to point',
+  'å planlegge', 'to plan',
+  'å pleie', 'to be in the habit of doing',
+  'å prøve', 'to try',
+  'å puste', 'to breathe',
+  'å reagere', 'to react',
+  'å regne', 'to rain',
+  'å rekke', 'to reach',
+  'å reise', 'to travel',
+  'å rense', 'to rinse',
+  'å ro', 'to calm',
+  'å rope', 'to shout',
+  'å rydde', 'to clean up',
+  'å samarbeide', 'to collaborate',
+  'å samle', 'to gather',
+  'å savne', 'to miss',
+  'å segle', 'to sail',
+  'å selge', 'to sell',
+  'å se', 'to see',
+  'å se på', 'to watch',
+  'å servere', 'to serve',
+  'å sette', 'to set',
+  'å skrike', 'to scream',
+  'å skåle', 'to toast',
+  'å si', 'to say',
+  'å sitte', 'to sit',
+  'å skifte', 'to switch',
+  'å skjønne', 'to understand',
+  'å skjære', 'to cut',
+  'å skli', 'to slide',
+  'å skremme', 'to scare',
+  'å skrive', 'to write',
+  'å skuffe', 'to disappoint',
+  'å skynde', 'to hurry',
+  'å skyte', 'to shoot',
+  'å skøyte', 'to skate',
+  'å slappe', 'to relax',
+  'å slippe', 'to drop',
+  'å slå', 'to hit',
+  'å slutte', 'to end',
+  'å smake', 'to taste',
+  'å smelte', 'to melt',
+  'å smerte', 'to smart',
+  'å smile', 'to smile',
+  'å snakke', 'to speak',
+  'å snø', 'to snow',
+  'å snu', 'to turn around',
+  'å sole seg', 'to sunbathe',
+  'å sove', 'to sleep',
+  'å sparke', 'to kick',
+  'å spille', 'to play',
+  'å spise', 'to eat',
+  'å spørre', 'to ask',
+  'å starte', 'to start',
+  'å stave', 'to spell',
+  'å stenge', 'to close',
+  'å stille', 'to pose',
+  'å stjele', 'to steal',
+  'å studere', 'to study',
+  'å stupe', 'to dive',
+  'å stå', 'to stand',
+  'å svare', 'to answer',
+  'å svinge', 'to swing',
+  'å svømme', 'to swim',
+  'å suge', 'to suck',
+  'å svelge', 'to swallow',
+  'å sykle', 'to bike',
+  'å synes', 'to think',
+  'å synge', 'to sing',
+  'å søke', 'to search',
+  'å søle', 'to spill',
+  'å ta', 'to take',
+  'å tape', 'to lose',
+  'å takke', 'to thank',
+  'å tegne', 'to draw',
+  'å tenke', 'to think',
+  'å tilbringe', 'to spend time',
+  'å treffe', 'to meet',
+  'å trekke', 'to draw',
+  'å trene', 'to train',
+  'å trives', 'to thrive',
+  'å tro', 'to believe',
+  'å tørke', 'to dry',
+  'å undervise', 'to teach',
+  'å varme', 'to warm',
+  'å vaske', 'to wash',
+  'å velge', 'to choose',
+  'å vente', 'to wait',
+  'å vinne', 'to win',
+  'å vise', 'to show',
+  'å viske', 'to erase',
+  'å vite', 'to know',
+  'å vokse', 'to grow',
+  'å våkne', 'to wake up',
+  'å være', 'to be',
+  'å øve', 'to practice',//
+  'å angre', 'to regret',
+  'å ansette', 'to employ',
+  'å avbestille', 'to cancel',
+  'å avbryte', 'to interrupt',
+  'å banne', 'to swear',
+  'å begrense', 'to limit',
+  'å behandle', 'to treat',
+  'å bekrefte', 'to confirm',
+  'å bekymre', 'to worry',
+  'å beskytte', 'to protect',
+  'å bestå', 'to pass',
+  'å betegne', 'to characterize',
+  'å bevise', 'to prove',
+  'å bidra', 'to contribute',
+  'å blekke', 'to bleach',
+  'å bremse', 'to brake',
+  'å bry', 'to care',
+  'å bøye', 'to bend',
+  'å dekke', 'to cover',
+  'å delta', 'to participate',
+  'å dempe', 'to muffle',
+  'å drepe', 'to kill',
+  'å drukne', 'to drown',
+  'å dytte', 'to push',
+  'å endre', 'to change',
+  'å fange', 'to capture',
+  'å ferdiggjøre', 'to complete',
+  'å fjerne', 'to remove',
+  'å forandre', 'to transform',
+  'å forbause', 'to astonish',
+  'å fordele', 'to distribute',
+  'å forfalle', 'to decay',
+  'å forsinke', 'to delay',
+  'å forske', 'to research',
+  'å forstyrre', 'to disturb',
+  'å forsvare', 'to defend',
+  'å forsvinne', 'to disappear',
+  'å forsøke', 'to attempt',
+  'å forvente', 'to expect',
+  'å forvirre', 'to confuse',
+  'å friste', 'to tempt',
+  'å frykte', 'to fear',
+  'å føne', 'to blow dry',
+  'å gjelde', 'to apply',
+  'å gni', 'to rub',
+  'å grue', 'to dread',
+  'å grunnlegge', 'to establish',
+  'å hakke', 'to chop',
+  'å haste', 'to hasten',
+  'å havne', 'to end up',
+  'å helle', 'to pour',
+  'å henspille', 'to allude',
+  'å hikke', 'to hiccup',
+  'å hindre', 'to hinder',
+  'å hviske', 'to whisper',
+  'å imponere', 'to impress',
+  'å jage', 'to hunt',
+  'å jukse', 'to cheat',
+  'å kartlegge', 'to map',
+  'å kjempe', 'to fight',
+  'å kjøle', 'to cool down',
+  'å klemme', 'to squeeze',
+  'å klistre', 'to paste',
+  'å knuse', 'to crush',
+  'å knytte', 'to tie',
+  'å konkurrere', 'to compete',
+  'å kvitte', 'to get rid of',
+  'å lagre', 'to save',
+  'å lete', 'to look for',
+  'å lette', 'to relieve',
+  'å levere', 'to deliver',
+  'å lide', 'to suffer',
+  'å lure', 'to trick',
+  'å lure på', 'to wonder',
+  'å løse', 'to solve',
+  'å melde', 'to report',
+  'å minne', 'to remind',
+  'å motsette', 'to oppose',
+  'å motta', 'to receive',
+  'å måle', 'to measure',
+  'å nedsette', 'to reduce',
+  'å negere', 'to negate',
+  'å nekte', 'to refuse',
+  'å nevne', 'to mention',
+  'å nikke', 'to nod',
+  'å nytte', 'to benefit',
+  'å ombestemme', 'to change mind',
+  'å omformulere', 'to reformulate',
+  'å omplassere', 'to relocate',
+  'å omskrive', 'to rewrite',
+  'å oppdra', 'to raise',
+  'å opphøre', 'to cease',
+  'å opplaste', 'to upload',
+  'å oppleve', 'to experience',
+  'å opplyse', 'to enlighten',
+  'å oppvarme', 'to warm up',
+  'å orke', 'to tolerate',
+  'å overbevise', 'to persuade',
+  'å overføre', 'to transfer',
+  'å overleve', 'to survive',
+  'å overta', 'to take over',
+  'å plage', 'to bother',
+  'å prioritere', 'to prioritize',
+  'å påminne', 'to remind',
+  'å redde', 'to save',
+  'å redigere', 'to edit',
+  'å regne', 'to count on',
+  'å rengjøre', 'to cleanse',
+  'å ri', 'to ride',
+  'å riste', 'to shake',
+  'å rote', 'to mess',
+  'å råde', 'to advise',
+  'å røre', 'to stir',
+  'å røyke', 'to smoke',
+  'å sage', 'to saw',
+  'å sammenligne', 'to compare',
+  'å sikre', 'to secure',
+  'å skape', 'to create',
+  'å skille', 'to separate',
+  'å skjerpe', 'to sharpen',
+  'å skylde', 'to blame',
+  'å skvette', 'to startle',
+  'å slanke', 'to diet',
+  'å slenge', 'to fling',
+  'å slikke', 'to lick',
+  'å slite', 'to struggle',
+  'å sluke', 'to gulp',
+  'å slåss', 'to fight',
+  'å smitt', 'to infect',
+  'å snorke', 'to snore',
+  'å speile', 'to mirror',
+  'å sperre', 'to block',
+  'å spisse', 'to sharpen',
+  'å spore', 'to track',
+  'å spre', 'to spread',
+  'å sprette', 'to burst',
+  'å spøke', 'to joke',
+  'å stemme', 'to vote',
+  'å stifte', 'to establish',
+  'å stige', 'to rise',
+  'å straffe', 'to punish',
+  'å stramme', 'to tighten',
+  'å stanse', 'to stop',
+  'å styre', 'to steer',
+  'å stryke', 'to iron',
+  'å styrke', 'to strengthen',
+  'å støtte', 'to support',
+  'å støvsuge', 'to vacuum',
+  'å sulte', 'to starve',
+  'å svindle', 'to swindle',
+  'å sørge', 'to ensure',
+  'å tilby', 'to offer',
+  'å tillate', 'to allow',
+  'å tilhøre', 'to belong',
+  'å tjene', 'to earn',
+  'å tulle', 'to joke',
+  'å tvile', 'to doubt',
+  'å tygge', 'to chew',
+  'å tørre', 'to dare',
+  'å tåle', 'to tolerate',
+  'å utdanne', 'to educate',
+  'å understreke', 'to emphasize',
+  'å undersøke', 'to investigate',
+  'å unngå', 'to avoid',
+  'å utfordre', 'to challenge',
+  'å utforske', 'to explore',
+  'å utføre', 'to perform',
+  'å utsette', 'to postpone',
+  'å uttrykke', 'to express',
+  'å utvikle', 'to develop',
+  'å varsle', 'to warn',
+  'å veilede', 'to guide',
+  'å vitne', 'to witness',
+  'å vri', 'to twist',
+  'å vurdere', 'to evaluate',
+  'å ødelegge', 'to damage',
+  'å øke', 'to increase',
+  'å ærte', 'to tease',//
+  'å anerkjenne', 'to recognize',
+  'å angripe', 'to attack',
+  'å angå', 'to concern',
+  'å anmelde', 'to review',
+  'å anse', 'to regard',
+  'å anskaffe', 'to acquire',
+  'å anta', 'to assume',
+  'å arve', 'to inherit',
+  'å avgjøre', 'to decide',
+  'å avklare', 'to clarify',
+  'å avslutte', 'to conclude',
+  'å avregne', 'to offset',
+  'å avlyse', 'to cancel',
+  'å avvikle', 'to liquidate',
+  'å avstå', 'to abstain',
+  'å bemanne', 'to staff',
+  'å begrave', 'to bury',
+  'å begrunne', 'to justify',
+  'å beherske', 'to master',
+  'å benytte', 'to utilize',
+  'å beslutte', 'to resolve',
+  'å danne', 'to form',
+  'å dyrke', 'to cultivate',
+  'å dømme', 'to judge',
+  'å erkjenne', 'to acknowledge',
+  'å erstatte', 'to replace',
+  'å etterforske', 'to investigate',
+  'å etterlate', 'to leave behind',
+  'å fordype', 'to immerse',
+  'å fordømme', 'to condemn',
+  'å fornærme', 'to offend',
+  'å forplikte', 'to obligate',
+  'å forebygge', 'to prevent',
+  'å forestille', 'to imagine',
+  'å foreta', 'to undertake',
+  'å forhindre', 'to prevent',
+  'å fornye', 'to renew',
+  'å fornøye', 'to entertain',
+  'å forsikre', 'to insure',
+  'å fortjene', 'to deserve',
+  'å fortolke', 'to interpret',
+  'å forurense', 'to pollute',
+  'å forutse', 'to anticipate',
+  'å forvalte', 'to manage',
+  'å fremføre', 'to present',
+  'å fremgå', 'to take form',
+  'å fremstille', 'to appear',
+  'å fremstå', 'to come forward',
+  'å fullføre', 'to complete',
+  'å føre', 'to lead to',
+  'å gjenspeile', 'to reflect',
+  'å gremme', 'to grieve',
+  'å gjennomføre', 'to implement',
+  'å godkjenne', 'to approve',
+  'å godta', 'to accept',
+  'å heie', 'to cheer',
+  'å henlegge', 'to dismiss',
+  'å henvise', 'to refer',
+  'å hevde', 'to claim',
+  'å imøtekomme', 'to accommodate',
+  'å imøtegå', 'to contest',
+  'å innbetale', 'to pay',
+  'å innblande', 'to involve',
+  'å innføre', 'to inaugurate',
+  'å inngå', 'to enter into',
+  'å innrede', 'to furnish',
+  'å innrømme', 'to admit',
+  'å innvilge', 'to grant',
+  'å ivre', 'to enthuse',
+  'å jamføre', 'to liken',
+  'å justere', 'to adjust',
+  'å kjefte', 'to reprimand',
+  'å klargjøre', 'to clarify',
+  'å medvirke', 'to contribute',
+  'å mekke', 'to tinker',
+  'å mekle', 'to mediate',
+  'å mislykkes', 'to fail',
+  'å mistenke', 'to suspect',
+  'å mistyde', 'to misconstrue',
+  'å motsi', 'to contradict',
+  'å motstå', 'to resist',
+  'å motvirke', 'to counteract',
+  'å nedbemanne', 'to downsize',
+  'å nedbetale', 'to pay off',
+  'å nedbygge', 'to reduce',
+  'å nedlate', 'to patronize',
+  'å nøle', 'to hesitate',
+  'å offentliggjøre', 'to publish',
+  'å omgjøre', 'to redo',
+  'å omtale', 'to mention',
+  'å oppbevare', 'to preserve',
+  'å oppfatte', 'to perceive',
+  'å oppfordre', 'to encourage',
+  'å oppfylle', 'to fulfill',
+  'å oppføre', 'to behave',
+  'å oppløfte', 'to uplift',
+  'å oppløse', 'to dissolve',
+  'å oppmuntre', 'to encourage',
+  'å oppnå', 'to accomplish',
+  'å opprøre', 'to revolt',
+  'å oppsette', 'to set up',
+  'å overbevise', 'to convince',
+  'å overlate', 'to relinquish',
+  'å overtale', 'to persuade',
+  'å prute', 'to bargain',
+  'å påstå', 'to assert',
+  'å påta', 'to undertake',
+  'å påvirke', 'to influence',
+  'å redegjøre', 'to rationalize',
+  'å satse', 'to bet',
+  'å skamme', 'to shame',
+  'å skjule', 'to conceal',
+  'å skryte', 'to brag',
+  'å slumre', 'to slumber',
+  'å slurve', 'to be careless',
+  'å snurre', 'to spin',
+  'å streve', 'to strive',
+  'å tilegne', 'to acquire',
+  'å tilpasse', 'to adapt',
+  'å tigge', 'to beg',
+  'å tolke', 'to interpret',
+  'å tyde', 'to decipher',
+  'å utfelle', 'to precipitate',
+  'å utløpe', 'to expire',
+  'å utspille', 'to play out',
+  'å utveksle', 'to exchange',
+  'å ytre', 'to utter',
+  'å ydmyke', 'to humble'
+]
+
+const verbs1: string[] = [
   'å akseptere', 'to accept',
   'å arbeide', 'to work',
   'å avtale', 'to make an arrangement',
@@ -3319,6 +4006,9 @@ const verbs2: string[] = [
   'å våkne', 'to wake up',
   'å være', 'to be',
   'å øve', 'to practice',
+]
+
+const verbs2: string[] = [
   'å angre', 'to regret',
   'å ansette', 'to employ',
   'å avbestille', 'to cancel',
@@ -3497,6 +4187,9 @@ const verbs2: string[] = [
   'å ødelegge', 'to damage',
   'å øke', 'to increase',
   'å ærte', 'to tease',
+]
+
+const verbs3: string[] = [
   'å anerkjenne', 'to recognize',
   'å angripe', 'to attack',
   'å angå', 'to concern',
