@@ -151,13 +151,7 @@ function TopicButtons() {
                   } else {
                     wordSet1.clear()
                     setListTopic1(topic)
-                    if (words.index % 2 === 0) {
-                      if (!wordSet1.has(words.index + 1)) {
-                        wordSet1.add(words.index)
-                      }
-                    } else if (!wordSet1.has(words.index - 1)) {
-                      wordSet1.add(words.index)
-                    }
+                    wordSet1.add(words.index)
                     setWord(getWords(topic))
                     setTranslate('Waiting...')
                     const reviewList = Array.from(wordSet1)
@@ -179,13 +173,7 @@ function TopicButtons() {
                   } else {
                     wordSet2.clear()
                     setListTopic2(topic)
-                    if (words.index % 2 === 0) {
-                      if (!wordSet2.has(words.index + 1)) {
-                        wordSet2.add(words.index)
-                      }
-                    } else if (!wordSet2.has(words.index - 1)) {
-                      wordSet2.add(words.index)
-                    }
+                    wordSet2.add(words.index)
                     setWord(getWords(topic))
                     setTranslate('Waiting...')
                     const reviewList = Array.from(wordSet2)
@@ -221,9 +209,11 @@ function TopicButtons() {
             onPress={() => {
               if(listTopic1 !== 'begining'){
                 setTopic(listTopic1)
-                setWord(getWords(listTopic1))
-                setTranslate('Waiting...')
-                setDisabler(false)                
+                setDisabler(false)  
+                if (listTopic1 !== topic){
+                  setWord(getWords(listTopic1))
+                  setTranslate('Waiting...')                  
+                }              
               }              
               setSelectedList(true)   
               setLista2(createList(listTopic1, Array.from(wordSet1)))                         
@@ -250,9 +240,11 @@ function TopicButtons() {
             onPress={() => {
               if(listTopic2 !== 'begining'){
                 setTopic(listTopic2)
-                setWord(getWords(listTopic2))
-                setTranslate('Waiting...')
-                setDisabler(false)                
+                setDisabler(false)         
+                if(listTopic2 !== topic){
+                  setWord(getWords(listTopic2))
+                  setTranslate('Waiting...')                  
+                }       
               }              
               setSelectedList(false)       
               setLista2(createList(listTopic2, Array.from(wordSet2)))
