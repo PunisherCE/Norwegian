@@ -19,7 +19,7 @@ let reviewList: string
 export default function TabOneScreen() {
 
   async function loadCustom(){
-    const test = await AsyncStorage.getItem("custom");
+    const test = await AsyncStorage.getItem("custom"); 
     if (test) {
       custom = test.split(",") 
     } else {
