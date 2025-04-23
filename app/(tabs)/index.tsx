@@ -4347,7 +4347,7 @@ const book1: string[] = [
 "stanse", "stop",
 "forretningene", "shops",
 "delikatesseforretningen", "delicatessen",
-"kjopmannen", "shopkeeper",
+"kjøpmannen", "shopkeeper",
 "skinken", "ham",
 "utmerket", "excellent",
 "skiven", "slice",
@@ -4359,7 +4359,7 @@ const book1: string[] = [
 "javel", "certainly",
 "å tenne", "to light",
 "bøye", "bend; submit",
-"vir", "twist",
+"vri", "twist",
 "fullstendig", "completely",
 "fremover", "forward",
 "nedover", "downwards",
@@ -4370,7 +4370,7 @@ const book1: string[] = [
 "å gå på rangel", "to go boozing",
 "å vende tilbake", "to go back; return",
 "pyntelig", "properly",
-"foberedt", "prepared",
+"forberedt", "prepared",
 "overfylt", "crowded",
 "fjernsyn", "television",
 "å komme for sent til", "to miss",
@@ -4381,7 +4381,7 @@ const book1: string[] = [
 "tydelig", "distinct",
 "husordenen", "regulations",
 "fengslet av", "fascinated by",
-"flatten", "raft",
+"flåten", "raft",
 "regnet dagen til slutt", "called it a day",
 "rådhuset", "city hall",
 "torget", "marketplace",
@@ -4490,5 +4490,4 @@ const book1: string[] = [
 "å innse", "to realise",
 "gir det beste utbyttet", "is the most worthwhile",
 "praktfull", "magnificent"
-
 ]
