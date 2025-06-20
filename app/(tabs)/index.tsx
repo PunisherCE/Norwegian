@@ -5,10 +5,10 @@ import { useState } from "react";
 import { useFocusEffect } from "expo-router";
 import { Checkbox } from "react-native-paper";
 
-type subjectType = "begining" | "sustantives" | "pronouns" | "verbs" | "questions" | "conjunctions" | "prepositions" | "adverbs" | "adjetives" | "other" | "compilation" | "many" | "various" | "custom" | "allVerbs" | "verbs1" | "verbs2" | "verbs3" | "book1";
+type subjectType = "begining" | "sustantives" | "pronouns" | "verbs" | "questions" | "conjunctions" | "prepositions" | "adverbs" | "adjetives" | "other" | "compilation" | "many" | "various" | "custom" | "allVerbs" | "verbs1" | "verbs2" | "verbs3" | "book1" | "irregular";
 
 const arrayTopics: any[] = [
-  { topic: "custom", id: 0}, { topic: "compilation", id: 1 } , { topic: "allVerbs", id: 2}, {topic: "book1", id: 3}, { topic: "sustantives", id: 4 }, { topic: "pronouns", id: 5 }, { topic: "verbs", id: 6 }, { topic: "questions", id: 7 }, { topic: "conjunctions", id: 8 }, { topic: "prepositions", id: 9 }, { topic: "adverbs", id: 10 }, { topic: "adjetives", id: 11 }, { topic: "other", id: 12 }, { topic: "many", id: 13 }, { topic: "various", id: 14 }, {topic: "verbs1", id: 15}, {topic: "verbs2", id: 16}, {topic: "verbs3", id: 17}
+  { topic: "custom", id: 0}, { topic: "compilation", id: 1 } , { topic: "allVerbs", id: 2}, {topic: "book1", id: 3}, { topic: "irregular", id: 18}, { topic: "sustantives", id: 4 }, { topic: "pronouns", id: 5 }, { topic: "verbs", id: 6 }, { topic: "questions", id: 7 }, { topic: "conjunctions", id: 8 }, { topic: "prepositions", id: 9 }, { topic: "adverbs", id: 10 }, { topic: "adjetives", id: 11 }, { topic: "other", id: 12 }, { topic: "many", id: 13 }, { topic: "various", id: 14 }, {topic: "verbs1", id: 15}, {topic: "verbs2", id: 16}, {topic: "verbs3", id: 17}
 ];
 
 let wordSet1 = new Set<number>()
@@ -549,6 +549,14 @@ function getWords(subject: subjectType): wordsTo {
 
       return { word: book1[currentIndex], index: currentIndex }
 
+    case "irregular":
+      currentIndex = Math.floor(Math.random() * irregular.length)
+      if (testeIndex !== currentIndex) {
+        testeIndex = currentIndex
+      } else return getWords(subject)
+
+      return { word: irregular[currentIndex], index: currentIndex }
+
 
     default:
       return { word: "", index: -1 }
@@ -630,6 +638,10 @@ function showTranslated(subject: subjectType, index: number): string {
         if (index % 2 === 0) {
           return book1[index + 1]
         } else return book1[index - 1]
+      case "irregular":
+        if (index % 2 === 0) {
+          return irregular[index + 1]
+        } else return irregular[index - 1]
       
     default:
       return ""
@@ -732,6 +744,12 @@ function createList(topic: subjectType, lista: number[]): string[] {
         currentItem = (index % 2 === 0)
           ? book1[index] + ": " + book1[index + 1] + "\n"
           : book1[index - 1] + ": " + book1[index] + "\n";
+        break
+
+      case "irregular":
+        currentItem = (index % 2 === 0)
+          ? irregular[index] + ": " + irregular[index + 1] + "\n"
+          : irregular[index - 1] + ": " + irregular[index] + "\n";
         break
 
       default:
@@ -4491,3 +4509,107 @@ const book1: string[] = [
 "gir det beste utbyttet", "is the most worthwhile",
 "praktfull", "magnificent"
 ]
+
+const irregular: string[] = [
+  "be (to ask; pray)", "bad; bedt",
+  "binde (to tie)", "bandt; bundet",
+  "bite (to bite)", "bet; bitt",
+  "bli (to stay; become)", "ble; blitt",
+  "brekke (to break)", "brakk; brukket",
+  "brenne (to burn)", "brant; brent",
+  "bringe (to bring)", "brakte; brakt",
+  "bryte (to break)", "brøt; brutt",
+  "by (to offer)", "bød; budt",
+  "bære (to carry)", "bar; båret",
+  "dra (to go; drag)", "drog; dratt",
+  "drikke (to drink)", "drakk; drukket",
+  "drive (to drive; operate)", "drev; drevet",
+  "ete (to eat)", "åt; ett",
+  "falle (to fall)", "falt; falt",
+  "finne (to find)", "fant; funnet",
+  "fly (to fly)", "fløy; fløyet",
+  "flyte (to float)", "fløt; flytt",
+  "forlate (to leave)", "forlot; forlatt",
+  "forsvinne (to disappear)", "forsvant; forsvunnet",
+  "fortelle (to tell; relate)", "fortalte; fortalt",
+  "fryse (to freeze)", "frøs; frosset",
+  "følge (to follow)", "fulgte; fulgt",
+  "få (to get)", "fikk; fått",
+  "gi (to give)", "gav; gitt",
+  "gjelde (to apply)", "gjaldt; gjeldt",
+  "gjøre (to do)", "gjorde; gjort",
+  "gli (to slip)", "gled; glidd",
+  "gripe (to grasp)", "grep; grepet",
+  "gråte (to cry)", "gråt; grått",
+  "gå (to go; walk)", "gikk; gått",
+  "ha (to have)", "hadde; hatt",
+  "henge (to hang)", "hang; hengt",
+  "hete (to be called)", "het; hett",
+  "hjelpe (to help)", "hjalp; hjulpet",
+  "holde (to hold)", "holdt; holdt",
+  "klype (to pinch)", "kløp; kløpet",
+  "knekke (to crack)", "knakk; knekket",
+  "komme (to come)", "kom; kommet",
+  "krype (to creep)", "krøp; krøpet",
+  "kunne (to be able to)", "kunne; kunnet",
+  "la (to let; allow)", "lot; latt",
+  "late (to seem)", "lot; latt",
+  "le (to laugh)", "lo; ledd",
+  "legge (to lay; put)", "la; lagt",
+  "lide (to suffer)", "led; lidd",
+  "ligge (to lie)", "lå; ligget",
+  "lyde (to sound)", "lød; lydt",
+  "lyve (to lie)", "løy; løyet",
+  "løpe (to run)", "løp; løpet/løpt",
+  "måtte (to have to)", "måtte; måttet",
+  "nyte (to enjoy)", "nøt; nytt",
+  "rekke (to reach)", "rakk; rukket",
+  "renne (to run)", "rant; rent",
+  "ri (to ride)", "red; ridd",
+  "rive (to tear)", "rev; revet",
+  "ryke (to smoke)", "røk; røket",
+  "se (to see)", "så; sett",
+  "selge (to sell)", "solgte; solgt",
+  "sette (to put; place)", "satte; satt",
+  "si (to say)", "sa; sagt",
+  "sitte (to sit)", "satt; sittet",
+  "skjære (to cut)", "skar; skåret",
+  "skli (to slide)", "skled; sklidd",
+  "skrike (to shout)", "skrek; skreket",
+  "skrive (to write)", "skrev; skrevet",
+  "skulle (should)", "skulle; skullet",
+  "skyte (to shoot)", "skjøt; skutt",
+  "skyve (to push)", "skjøv; skjøvet",
+  "slenge (to hang about)", "slang; slengt",
+  "slippe (to let go)", "slapp; sluppet",
+  "slite (to pull; tear)", "slet; slitt",
+  "slå (to hit)", "slo; slått",
+  "smelle (to bang)", "smalt; smelt",
+  "smøre (to spread)", "smurte; smurt",
+  "sove (to sleep)", "sov; sovet",
+  "sprekke (to crack)", "sprakk; sprukket",
+  "springe (to run)", "sprang; sprunget",
+  "spørre (to ask)", "spurte; spurt",
+  "stige (to climb)", "steg; steget",
+  "stikke (to sting; pierce)", "stakk; stukket",
+  "stjele (to steal)", "stjal; stjålet",
+  "stryke (to iron)", "strøk; strøket",
+  "stå (to stand)", "stod; stått",
+  "svi (to sting)", "sved; svidd",
+  "svike (to betray)", "svek; sveket",
+  "synge (to sing)", "sang; sunget",
+  "synke (to sink)", "sank; sunket",
+  "ta (to take)", "tok; tatt",
+  "tigge (to beg)", "tagg; tigget",
+  "tore (to dare)", "torde; tort",
+  "treffe (to meet)", "traff; truffet",
+  "trekke (to draw; pull)", "trakk; trukket",
+  "tvinge (to force)", "tvang; tvunget",
+  "velge (to choose)", "valgte; valgt",
+  "ville (to want to)", "ville; villet",
+  "vinne (to win)", "vant; vunnet",
+  "vite (to know)", "visste; visst",
+  "være (to be)", "var; vært"
+]
+
+
