@@ -2,12 +2,14 @@ import { Pressable, StatusBar, StyleSheet, TextInput } from 'react-native';
 import { Text, View } from '@/components/Themed';
 import { useRef, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Checkbox } from 'react-native-paper';
 
 export default function add() {
 
   const [norsk, setNorsk] = useState('')
   const [english, setEnglish] = useState('')
   const [isInputFocused, setInputFocused] = useState(false);
+  const [whichCustome, setWichCustom] = useState(0);
   const inputRef1 = useRef<TextInput>(null);
   const inputRef2 = useRef<TextInput>(null);
 
@@ -15,13 +17,42 @@ export default function add() {
 
   async function customize(nor: string, eng: string){
     try {
-      test = await AsyncStorage.getItem('custom'); 
-      console.log('original')
-      if (!test!.includes(nor)){
-        test = test!.replaceAll('"', '')
-        test = test!.concat(',', nor, ',', eng)  
-        await AsyncStorage.setItem('custom',test!);
-        console.log('add', test)
+      if(whichCustome == 0){
+        test = await AsyncStorage.getItem('custom'); 
+        console.log('original')
+        if (!test!.includes(nor)){
+          test = test!.replaceAll('"', '')
+          test = test!.concat(',', nor, ',', eng)  
+          await AsyncStorage.setItem('custom',test!);
+          console.log('add', test)
+        }
+      } else if(whichCustome == 1){
+        test = await AsyncStorage.getItem('custom2'); 
+        console.log('original')
+        if (!test!.includes(nor)){
+          test = test!.replaceAll('"', '')
+          test = test!.concat(',', nor, ',', eng)  
+          await AsyncStorage.setItem('custom2',test!);
+          console.log('add', test)
+        }
+      } else if(whichCustome == 2){
+        test = await AsyncStorage.getItem('custom3'); 
+        console.log('original')
+        if (!test!.includes(nor)){
+          test = test!.replaceAll('"', '')
+          test = test!.concat(',', nor, ',', eng)  
+          await AsyncStorage.setItem('custom3',test!);
+          console.log('add', test)
+        }
+      } else if(whichCustome == 3){
+        test = await AsyncStorage.getItem('custom4'); 
+        console.log('original')
+        if (!test!.includes(nor)){
+          test = test!.replaceAll('"', '')
+          test = test!.concat(',', nor, ',', eng)  
+          await AsyncStorage.setItem('custom4',test!);
+          console.log('add', test)
+        }
       }
     } catch(e){
       console.log(e)
@@ -83,6 +114,24 @@ export default function add() {
           }
         }}
       ><Text style={{color: '#fff'}}>Save Words</Text></Pressable>
+      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', backgroundColor: '#000' }}>
+        <Checkbox 
+          status={whichCustome == 0? 'checked' : 'unchecked'}
+          onPress={() => setWichCustom(0)}>
+        </Checkbox>
+        <Checkbox 
+          status={whichCustome == 1? 'checked' : 'unchecked'}
+          onPress={() => setWichCustom(1)}>
+        </Checkbox>
+        <Checkbox 
+          status={whichCustome == 2? 'checked' : 'unchecked'}
+          onPress={() => setWichCustom(2)}>
+        </Checkbox>
+        <Checkbox 
+          status={whichCustome == 3? 'checked' : 'unchecked'}
+          onPress={() => setWichCustom(3)}>
+        </Checkbox>
+      </View>
     </View>
   );
 }

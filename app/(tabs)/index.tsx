@@ -5,10 +5,10 @@ import { useState } from "react";
 import { useFocusEffect } from "expo-router";
 import { Checkbox } from "react-native-paper";
 
-type subjectType = "begining" | "sustantives" | "pronouns" | "verbs" | "questions" | "conjunctions" | "prepositions" | "adverbs" | "adjetives" | "other" | "compilation" | "many" | "various" | "custom" | "allVerbs" | "verbs1" | "verbs2" | "verbs3" | "book1" | "irregular";
+type subjectType = "begining" | "sustantives" | "pronouns" | "verbs" | "questions" | "conjunctions" | "prepositions" | "adverbs" | "adjetives" | "other" | "compilation" | "many" | "various" | "custom" | "custom2" | "custom3" | "custom4" | "allVerbs" | "verbs1" | "verbs2" | "verbs3" | "book1" | "irregular" | "duo";
 
 const arrayTopics: any[] = [
-  { topic: "custom", id: 0}, { topic: "compilation", id: 1 } , { topic: "allVerbs", id: 2}, {topic: "book1", id: 3}, { topic: "irregular", id: 18}, { topic: "sustantives", id: 4 }, { topic: "pronouns", id: 5 }, { topic: "verbs", id: 6 }, { topic: "questions", id: 7 }, { topic: "conjunctions", id: 8 }, { topic: "prepositions", id: 9 }, { topic: "adverbs", id: 10 }, { topic: "adjetives", id: 11 }, { topic: "other", id: 12 }, { topic: "many", id: 13 }, { topic: "various", id: 14 }, {topic: "verbs1", id: 15}, {topic: "verbs2", id: 16}, {topic: "verbs3", id: 17}
+  { topic: "custom", id: 0}, { topic: "custom2", id: 1}, { topic: "custom3", id: 2}, { topic: "custom4", id: 3}, { topic: "duo", id: 4}, { topic: "compilation", id: 5} , { topic: "allVerbs", id: 6}, {topic: "book1", id: 7}, { topic: "irregular", id: 8}, { topic: "sustantives", id: 9}, { topic: "pronouns", id: 10}, { topic: "verbs", id: 11}, { topic: "questions", id: 12}, { topic: "conjunctions", id: 13}, { topic: "prepositions", id: 14}, { topic: "adverbs", id: 15}, { topic: "adjetives", id: 16}, { topic: "other", id: 17}, { topic: "many", id: 18}, { topic: "various", id: 19}, {topic: "verbs1", id: 20}, {topic: "verbs2", id: 21}, {topic: "verbs3", id: 22}
 ];
 
 let wordSet1 = new Set<number>()
@@ -24,6 +24,24 @@ export default function TabOneScreen() {
       custom = test.split(",") 
     } else {
       await AsyncStorage.setItem("custom", "elsker med deg,make love to you");
+    }
+    const test2 = await AsyncStorage.getItem("custom2"); 
+    if (test2) {
+      custom2 = test2.split(",") 
+    } else {
+      await AsyncStorage.setItem("custom2", "elsker med deg,make love to you");
+    }
+    const test3 = await AsyncStorage.getItem("custom3"); 
+    if (test3) {
+      custom3 = test3.split(",") 
+    } else {
+      await AsyncStorage.setItem("custom3", "elsker med deg,make love to you");
+    }
+    const test4 = await AsyncStorage.getItem("custom4"); 
+    if (test4) {
+      custom4 = test4.split(",") 
+    } else {
+      await AsyncStorage.setItem("custom4", "elsker med deg,make love to you");
     }
     const review = await AsyncStorage.getItem("review")
     if(review){
@@ -509,6 +527,39 @@ function getWords(subject: subjectType): wordsTo {
 
       return { word: custom[currentIndex], index: currentIndex }
 
+    case "custom2":
+      currentIndex = Math.floor(Math.random() * custom2.length)
+      if (testeIndex !== currentIndex) {
+        testeIndex = currentIndex
+      } else return getWords(subject)
+
+      return { word: custom2[currentIndex], index: currentIndex }
+
+    case "custom3":
+      currentIndex = Math.floor(Math.random() * custom3.length)
+      if (testeIndex !== currentIndex) {
+        testeIndex = currentIndex
+      } else return getWords(subject)
+
+      return { word: custom3[currentIndex], index: currentIndex }
+
+    case "custom4":
+      currentIndex = Math.floor(Math.random() * custom4.length)
+      if (testeIndex !== currentIndex) {
+        testeIndex = currentIndex
+      } else return getWords(subject)
+
+      return { word: custom4[currentIndex], index: currentIndex }
+
+    case "duo":
+      currentIndex = Math.floor(Math.random() * duo.length)
+      if (testeIndex !== currentIndex) {
+        testeIndex = currentIndex
+      } else return getWords(subject)
+
+      return { word: duo[currentIndex], index: currentIndex }
+
+
     case "allVerbs":
       currentIndex = Math.floor(Math.random() * allVerbs.length)
       if (testeIndex !== currentIndex) {
@@ -618,6 +669,22 @@ function showTranslated(subject: subjectType, index: number): string {
       if (index % 2 === 0) {
         return custom[index + 1]
       } else return custom[index - 1]
+    case "custom2":
+      if (index % 2 === 0) {
+        return custom2[index + 1]
+      } else return custom2[index - 1]
+    case "custom3":
+      if (index % 2 === 0) {
+        return custom3[index + 1]
+      } else return custom3[index - 1]
+    case "custom4":
+      if (index % 2 === 0) {
+        return custom4[index + 1]
+      } else return custom4[index - 1]
+    case "duo":
+      if (index % 2 === 0) {
+        return duo[index + 1]
+      } else return duo[index - 1]
     case "allVerbs":
       if (index % 2 === 0) {
         return allVerbs[index + 1]
@@ -720,6 +787,26 @@ function createList(topic: subjectType, lista: number[]): string[] {
           ? custom[index] + ": " + custom[index + 1] + "\n"
           : custom[index - 1] + ": " + custom[index] + "\n";
         break
+      case "custom2":
+        currentItem = (index % 2 === 0)
+          ? custom2[index] + ": " + custom2[index + 1] + "\n"
+          : custom2[index - 1] + ": " + custom2[index] + "\n";
+        break
+      case "custom3":
+        currentItem = (index % 2 === 0)
+          ? custom3[index] + ": " + custom3[index + 1] + "\n"
+          : custom3[index - 1] + ": " + custom3[index] + "\n";
+        break
+      case "custom4":
+        currentItem = (index % 2 === 0)
+          ? custom4[index] + ": " + custom4[index + 1] + "\n"
+          : custom4[index - 1] + ": " + custom4[index] + "\n";
+        break
+      case "duo":
+        currentItem = (index % 2 === 0)
+          ? duo[index] + ": " + duo[index + 1] + "\n"
+          : duo[index - 1] + ": " + duo[index] + "\n";
+        break
       case "allVerbs":
         currentItem = (index % 2 === 0)
           ? allVerbs[index] + ": " + allVerbs[index + 1] + "\n"
@@ -763,6 +850,22 @@ function createList(topic: subjectType, lista: number[]): string[] {
 }
 
 let custom: string[] = [
+  "elsker med deg", "make love to you"
+]
+
+let custom2: string[] = [
+  "elsker med deg", "make love to you"
+]
+
+let custom3: string[] = [
+  "elsker med deg", "make love to you"
+]
+
+let custom4: string[] = [
+  "elsker med deg", "make love to you"
+]
+
+let duo: string[] = [
   "elsker med deg", "make love to you"
 ]
 
