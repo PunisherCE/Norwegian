@@ -15,49 +15,40 @@ export default function add() {
 
   let test: string | null
 
-  async function customize(nor: string, eng: string){
-    try {
-      if(whichCustome == 0){
-        test = await AsyncStorage.getItem('custom'); 
-        console.log('original')
-        if (!test!.includes(nor)){
-          test = test!.replaceAll('"', '')
-          test = test!.concat(',', nor, ',', eng)  
-          await AsyncStorage.setItem('custom',test!);
-          console.log('add', test)
-        }
-      } else if(whichCustome == 1){
-        test = await AsyncStorage.getItem('custom2'); 
-        console.log('original')
-        if (!test!.includes(nor)){
-          test = test!.replaceAll('"', '')
-          test = test!.concat(',', nor, ',', eng)  
-          await AsyncStorage.setItem('custom2',test!);
-          console.log('add', test)
-        }
-      } else if(whichCustome == 2){
-        test = await AsyncStorage.getItem('custom3'); 
-        console.log('original')
-        if (!test!.includes(nor)){
-          test = test!.replaceAll('"', '')
-          test = test!.concat(',', nor, ',', eng)  
-          await AsyncStorage.setItem('custom3',test!);
-          console.log('add', test)
-        }
-      } else if(whichCustome == 3){
-        test = await AsyncStorage.getItem('custom4'); 
-        console.log('original')
-        if (!test!.includes(nor)){
-          test = test!.replaceAll('"', '')
-          test = test!.concat(',', nor, ',', eng)  
-          await AsyncStorage.setItem('custom4',test!);
-          console.log('add', test)
-        }
-      }
-    } catch(e){
-      console.log(e)
+  // Corrected save function using JSON
+async function customize(nor: string, eng: string) {
+  try {
+    let key = '';
+    if (whichCustome === 0) key = 'custom';
+    else if (whichCustome === 1) key = 'custom2';
+    else if (whichCustome === 2) key = 'custom3';
+    else if (whichCustome === 3) key = 'custom4';
+
+    if (!key) return;
+
+    // 1. Get the current data. If null, start with an empty array.
+    const storedData = await AsyncStorage.getItem(key);
+    let dataArray = storedData ? JSON.parse(storedData) : [];
+
+    // 2. Accurately check if the word already exists as a distinct entry
+    const wordExists = dataArray.some(
+      (item: { norsk: string; english: string }) => item.norsk === nor
+    );
+
+    if (!wordExists) {
+      // 3. Add the new word as an object to the array.
+      dataArray.push({ norsk: nor, english: eng });
+
+      // 4. Save the updated array back to AsyncStorage as a string.
+      await AsyncStorage.setItem(key, JSON.stringify(dataArray));
+      console.log('Saved successfully to ' + key, dataArray);
+    } else {
+      console.log('Word already exists, not saving.');
     }
+  } catch (e) {
+    console.error('Failed to save to AsyncStorage:', e);
   }
+}
 
   const handleBlur = () => {
     if (isInputFocused) {

@@ -18,36 +18,60 @@ let reviewList: string
 
 export default function TabOneScreen() {
 
-  async function loadCustom(){
-    const test = await AsyncStorage.getItem("custom"); 
-    if (test) {
-      custom = test.split(",") 
-    } else {
-      await AsyncStorage.setItem("custom", "elsker med deg,make love to you");
+  async function loadCustom() {
+    const customKeys = ['custom', 'custom2', 'custom3', 'custom4'];
+    
+    for (const key of customKeys) {
+      const test = await AsyncStorage.getItem(key);
+      
+      if (test) {
+        try {
+          // Attempt to parse the JSON data
+          const dataArray = JSON.parse(test);
+          
+          // Ensure dataArray is an array before mapping
+          if (Array.isArray(dataArray)) {
+            // Flatten the array of objects into a single array of strings
+            const flatList = dataArray.flatMap(item => [item.norsk, item.english]);
+            
+            // Assign to the correct global variable based on the key
+            if (key === 'custom') custom = flatList;
+            else if (key === 'custom2') custom2 = flatList;
+            else if (key === 'custom3') custom3 = flatList;
+            else if (key === 'custom4') custom4 = flatList;
+            
+          } else {
+            // If the data is not a valid JSON array, initialize it
+            await AsyncStorage.setItem(key, JSON.stringify([{ norsk: 'elsker med deg', english: 'make love to you' }]));
+            if (key === 'custom') custom = ['elsker med deg', 'make love to you'];
+            else if (key === 'custom2') custom2 = ['elsker med deg', 'make love to you'];
+            else if (key === 'custom3') custom3 = ['elsker med deg', 'make love to you'];
+            else if (key === 'custom4') custom4 = ['elsker med deg', 'make love to you'];
+          }
+        } catch (e) {
+          // This will catch the error from old string data. Initialize the key with the new format.
+          console.error(`Failed to parse JSON for ${key}. Re-initializing.`);
+          await AsyncStorage.setItem(key, JSON.stringify([{ norsk: 'elsker med deg', english: 'make love to you' }]));
+          if (key === 'custom') custom = ['elsker med deg', 'make love to you'];
+          else if (key === 'custom2') custom2 = ['elsker med deg', 'make love to you'];
+          else if (key === 'custom3') custom3 = ['elsker med deg', 'make love to you'];
+          else if (key === 'custom4') custom4 = ['elsker med deg', 'make love to you'];
+        }
+      } else {
+        // If no data exists, save the default list in the new JSON format
+        await AsyncStorage.setItem(key, JSON.stringify([{ norsk: 'elsker med deg', english: 'make love to you' }]));
+        if (key === 'custom') custom = ['elsker med deg', 'make love to you'];
+        else if (key === 'custom2') custom2 = ['elsker med deg', 'make love to you'];
+        else if (key === 'custom3') custom3 = ['elsker med deg', 'make love to you'];
+        else if (key === 'custom4') custom4 = ['elsker med deg', 'make love to you'];
+      }
     }
-    const test2 = await AsyncStorage.getItem("custom2"); 
-    if (test2) {
-      custom2 = test2.split(",") 
-    } else {
-      await AsyncStorage.setItem("custom2", "elsker med deg,make love to you");
-    }
-    const test3 = await AsyncStorage.getItem("custom3"); 
-    if (test3) {
-      custom3 = test3.split(",") 
-    } else {
-      await AsyncStorage.setItem("custom3", "elsker med deg,make love to you");
-    }
-    const test4 = await AsyncStorage.getItem("custom4"); 
-    if (test4) {
-      custom4 = test4.split(",") 
-    } else {
-      await AsyncStorage.setItem("custom4", "elsker med deg,make love to you");
-    }
-    const review = await AsyncStorage.getItem("review")
+  
+    const review = await AsyncStorage.getItem("review");
     if(review){
-      reviewList = review
-      console.log(reviewList)
-    } else reviewList = ""
+      reviewList = review;
+      console.log(reviewList);
+    } else reviewList = "";
   }
 
   useFocusEffect(() => { loadCustom()})

@@ -1,51 +1,106 @@
 import { View, Text, StatusBar, StyleSheet, FlatList, Alert, Pressable } from 'react-native'
-import React, { useLayoutEffect, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AntDesign } from '@expo/vector-icons';
+import { Checkbox } from 'react-native-paper';
+
+interface WordPair {
+  norsk: string;
+  english: string;
+}
 
 const custom = () => {
 
   const [customArray, setCustomArray] = useState<string[]>([])
-  let customList: string
-  let listaFinal: string[] = []
+  const [whichCustome, setWichCustom] = useState(0);
 
-  async function loadCustom(){
-    const customs = await AsyncStorage.getItem('custom')
-    if(customs){
-      let itemFinal: string = ''
-      customList = customs
-      const crearLista = customList.split(',') 
-      for(const word of crearLista){
-        if(crearLista.indexOf(word) % 2 === 0){
-          itemFinal = word
-        } else{
-          itemFinal = itemFinal.concat(',' + word)
-          listaFinal.push(itemFinal)
-          itemFinal = ''
-        }
-      }
-      setCustomArray(listaFinal)
-      console.log(listaFinal)
-    }
+  // in your custom component
+async function loadCustom() {
+  const key = `custom${whichCustome === 0 ? '' : whichCustome + 1}`;
+  const customs = await AsyncStorage.getItem(key);
+
+  if (customs) {
+    // Parse the JSON string back into an array of objects
+    const dataArray: WordPair[] = JSON.parse(customs);
+    
+    // Now you can easily convert the data to your desired format
+    const listaFinal = dataArray.map(item => `${item.norsk},${item.english}`);
+    setCustomArray(listaFinal);
+    console.log(listaFinal);
+  } else {
+    // Handle the case where the key is empty or null
+    setCustomArray([]);
+    console.log('No data found for key:', key);
   }
+}
 
   async function removeCustom(item: string) {
-    let customs = await AsyncStorage.getItem('custom')
-    if(customs!.endsWith(item)){
-      customs = customs!.replace(',' + item , '')
-    } else if((customs!.endsWith(item) && customs!.startsWith(item)) || (customs!.endsWith(item + ',') && customs!.startsWith(item))){
-      customs = ''
-    } else {
-      customs = customs!.replace(item + ',' , '')
+    if(whichCustome == 0){
+      let customs = await AsyncStorage.getItem('custom')
+      if(customs!.endsWith(item)){
+        customs = customs!.replace(',' + item , '')
+      } else if((customs!.endsWith(item) && customs!.startsWith(item)) || (customs!.endsWith(item + ',') && customs!.startsWith(item))){
+        customs = ''
+      } else {
+        customs = customs!.replace(item + ',' , '')
+      }
+      await AsyncStorage.setItem('custom', customs)
+      loadCustom()
+
+    } else if(whichCustome == 1) {
+      let customs = await AsyncStorage.getItem('custom2')
+      if(customs!.endsWith(item)){
+        customs = customs!.replace(',' + item , '')
+      } else if((customs!.endsWith(item) && customs!.startsWith(item)) || (customs!.endsWith(item + ',') && customs!.startsWith(item))){
+        customs = ''
+      } else {
+        customs = customs!.replace(item + ',' , '')
+      }
+      await AsyncStorage.setItem('custom2', customs)
+      loadCustom()
+
+    } else if(whichCustome == 2) {
+      let customs = await AsyncStorage.getItem('custom3')
+      if(customs!.endsWith(item)){
+        customs = customs!.replace(',' + item , '')
+      } else if((customs!.endsWith(item) && customs!.startsWith(item)) || (customs!.endsWith(item + ',') && customs!.startsWith(item))){
+        customs = ''
+      } else {
+        customs = customs!.replace(item + ',' , '')
+      }
+      await AsyncStorage.setItem('custom3', customs)
+      loadCustom()
+
+    } else if(whichCustome == 3) {
+      let customs = await AsyncStorage.getItem('custom4')
+      if(customs!.endsWith(item)){
+        customs = customs!.replace(',' + item , '')
+      } else if((customs!.endsWith(item) && customs!.startsWith(item)) || (customs!.endsWith(item + ',') && customs!.startsWith(item))){
+        customs = ''
+      } else {
+        customs = customs!.replace(item + ',' , '')
+      }
+      await AsyncStorage.setItem('custom4', customs)
+      loadCustom()
     }
-    await AsyncStorage.setItem('custom', customs)
-    loadCustom()
   }
 
   async function clear() {
-    await AsyncStorage.setItem('custom', 'elsker med deg,make love to you')
+    if(whichCustome == 0){
+      await AsyncStorage.setItem('custom', 'elsker med deg,make love to you')
+    } else if(whichCustome == 1){
+      await AsyncStorage.setItem('custom2', 'elsker med deg,make love to you')
+    } else if(whichCustome == 2){
+      await AsyncStorage.setItem('custom3', 'elsker med deg,make love to you')
+    } else if(whichCustome == 3){
+      await AsyncStorage.setItem('custom4', 'elsker med deg,make love to you')
+    }    
     setCustomArray([])
   }
+
+  useEffect(() => {
+    loadCustom();
+  }, [whichCustome]);
 
   useLayoutEffect(() => { loadCustom()}, [])
 
@@ -70,6 +125,24 @@ const custom = () => {
             <Text style={{color: '#fff'}}>{item}</Text>
           </View>  )}
       />
+      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', backgroundColor: '#000', marginBottom: 20 }}>
+        <Checkbox 
+          status={whichCustome == 0? 'checked' : 'unchecked'}
+          onPress={() => setWichCustom(0)}>
+        </Checkbox>
+        <Checkbox 
+          status={whichCustome == 1? 'checked' : 'unchecked'}
+          onPress={() => setWichCustom(1)}>
+        </Checkbox>
+        <Checkbox 
+          status={whichCustome == 2? 'checked' : 'unchecked'}
+          onPress={() => setWichCustom(2)}>
+        </Checkbox>
+        <Checkbox 
+          status={whichCustome == 3? 'checked' : 'unchecked'}
+          onPress={() => setWichCustom(3)}>
+        </Checkbox>
+      </View>
       <View style={{flexDirection: 'row'}}>
         <Pressable
           style={styles.buttons}
