@@ -14,74 +14,49 @@ const custom = () => {
   const [customArray, setCustomArray] = useState<string[]>([])
   const [whichCustome, setWichCustom] = useState(0);
 
-  // in your custom component
-async function loadCustom() {
-  const key = `custom${whichCustome === 0 ? '' : whichCustome + 1}`;
-  const customs = await AsyncStorage.getItem(key);
+    // in your custom component
+  async function loadCustom() {
+    const key = `custom${whichCustome === 0 ? '' : whichCustome + 1}`;
+    const customs = await AsyncStorage.getItem(key);
 
-  if (customs) {
-    // Parse the JSON string back into an array of objects
-    const dataArray: WordPair[] = JSON.parse(customs);
-    
-    // Now you can easily convert the data to your desired format
-    const listaFinal = dataArray.map(item => `${item.norsk},${item.english}`);
-    setCustomArray(listaFinal);
-    console.log(listaFinal);
-  } else {
-    // Handle the case where the key is empty or null
-    setCustomArray([]);
-    console.log('No data found for key:', key);
+    if (customs) {
+      // Parse the JSON string back into an array of objects
+      const dataArray: WordPair[] = JSON.parse(customs);
+      
+      // Now you can easily convert the data to your desired format
+      const listaFinal = dataArray.map(item => `${item.norsk},${item.english}`);
+      setCustomArray(listaFinal);
+      console.log(listaFinal);
+    } else {
+      // Handle the case where the key is empty or null
+      setCustomArray([]);
+      console.log('No data found for key:', key);
+    }
   }
-}
 
   async function removeCustom(item: string) {
-    if(whichCustome == 0){
-      let customs = await AsyncStorage.getItem('custom')
-      if(customs!.endsWith(item)){
-        customs = customs!.replace(',' + item , '')
-      } else if((customs!.endsWith(item) && customs!.startsWith(item)) || (customs!.endsWith(item + ',') && customs!.startsWith(item))){
-        customs = ''
-      } else {
-        customs = customs!.replace(item + ',' , '')
+    const key = `custom${whichCustome === 0 ? '' : whichCustome + 1}`;
+    
+    try {
+      const customs = await AsyncStorage.getItem(key);
+      
+      if (customs) {
+        const dataArray = JSON.parse(customs);
+        
+        // Filter out the item based on the string from the FlatList
+        const [norskToRemove, englishToRemove] = item.split(',');
+        const newArray = dataArray.filter(
+          (wordPair: { norsk: string; english: string }) => 
+            wordPair.norsk !== norskToRemove || wordPair.english !== englishToRemove
+        );
+        
+        await AsyncStorage.setItem(key, JSON.stringify(newArray));
+  
+        // Reload the component to reflect the change
+        loadCustom(); // <-- No argument is passed here
       }
-      await AsyncStorage.setItem('custom', customs)
-      loadCustom()
-
-    } else if(whichCustome == 1) {
-      let customs = await AsyncStorage.getItem('custom2')
-      if(customs!.endsWith(item)){
-        customs = customs!.replace(',' + item , '')
-      } else if((customs!.endsWith(item) && customs!.startsWith(item)) || (customs!.endsWith(item + ',') && customs!.startsWith(item))){
-        customs = ''
-      } else {
-        customs = customs!.replace(item + ',' , '')
-      }
-      await AsyncStorage.setItem('custom2', customs)
-      loadCustom()
-
-    } else if(whichCustome == 2) {
-      let customs = await AsyncStorage.getItem('custom3')
-      if(customs!.endsWith(item)){
-        customs = customs!.replace(',' + item , '')
-      } else if((customs!.endsWith(item) && customs!.startsWith(item)) || (customs!.endsWith(item + ',') && customs!.startsWith(item))){
-        customs = ''
-      } else {
-        customs = customs!.replace(item + ',' , '')
-      }
-      await AsyncStorage.setItem('custom3', customs)
-      loadCustom()
-
-    } else if(whichCustome == 3) {
-      let customs = await AsyncStorage.getItem('custom4')
-      if(customs!.endsWith(item)){
-        customs = customs!.replace(',' + item , '')
-      } else if((customs!.endsWith(item) && customs!.startsWith(item)) || (customs!.endsWith(item + ',') && customs!.startsWith(item))){
-        customs = ''
-      } else {
-        customs = customs!.replace(item + ',' , '')
-      }
-      await AsyncStorage.setItem('custom4', customs)
-      loadCustom()
+    } catch (e) {
+      console.error('Failed to remove custom item:', e);
     }
   }
 
